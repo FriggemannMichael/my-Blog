@@ -2,6 +2,7 @@
   "name": "dso-dev-blog",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -26,8 +27,10 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.5.2",
+    "@docusaurus/theme-classic": "3.5.2",
     "@docusaurus/tsconfig": "3.5.2",
     "@docusaurus/types": "3.5.2",
+    "@types/node": "22.5.4",
     "typescript": "~5.5.2"
   },
   "browserslist": {
