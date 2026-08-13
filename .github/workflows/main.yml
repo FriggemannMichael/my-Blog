@@ -8,8 +8,7 @@ on:
       - main
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
   # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
   pages: write # to deploy to Pages
   id-token: write
