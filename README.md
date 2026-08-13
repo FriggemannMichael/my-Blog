@@ -19,7 +19,7 @@ This repository contains a Docusaurus-based developer blog and knowledge base fo
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 18 or later
+- [Node.js](https://nodejs.org/) 22 or later
 - [pnpm](https://pnpm.io/) 11.9.0, as specified in `package.json`
 - [Docker](https://www.docker.com/products/docker-desktop) only when using the [NGINX and Docker](#nginx-and-docker) deployment option
 

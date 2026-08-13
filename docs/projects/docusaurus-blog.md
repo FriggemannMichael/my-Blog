@@ -27,7 +27,7 @@ This project is my DevSecOps learning journal and portfolio. It is based on the 
 
 ## Quickstart
 
-Prerequisites: Node.js 18 or later and pnpm 11.9.0.
+Prerequisites: Node.js 22 or later and pnpm 11.9.0.
 
 ```bash
 pnpm install --frozen-lockfile
