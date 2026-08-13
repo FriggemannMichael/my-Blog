@@ -18,25 +18,32 @@ This project is my DevSecOps learning journal and portfolio. It is based on the 
   This repository contains the implementation.
 </GithubLinkAdmonition>
 
-## Contents
+## Table Of Contents
 
 - [Quickstart](#quickstart)
-- [Configuration](#configuration)
-- [Deployment](#deployment)
-- [Validation](#validation)
+- [Usage](#usage)
+  - [Configuration](#configuration)
+  - [Deployment](#deployment)
+  - [Validation](#validation)
 
 ## Quickstart
 
-Prerequisites: Node.js 22 or later and pnpm 11.9.0.
+### Prerequisites
+
+Git, Node.js 22 or later, and pnpm 11.9.0 must be installed.
 
 ```bash
+git clone https://github.com/FriggemannMichael/my-Blog.git
+cd my-Blog
 pnpm install --frozen-lockfile
 pnpm start
 ```
 
-Open `http://localhost:3000/my-Blog/` after the server starts.
+Open `http://<your_ip>:3000/my-Blog/` after the server starts.
 
-## Configuration
+## Usage
+
+### Configuration
 
 I configured the starter by:
 
@@ -47,7 +54,7 @@ I configured the starter by:
 5. adding the `/docs/projects` route;
 6. improving the homepage button spacing and mobile wrapping.
 
-### Environment variables
+#### Environment variables
 
 Copy `example.env` to `.env` only when overriding the safe defaults. Never commit `.env`.
 
@@ -61,13 +68,13 @@ Copy `example.env` to `.env` only when overriding the safe defaults. Never commi
 
 Only public values belong in `example.env`; secrets and private infrastructure data stay outside Git.
 
-## Deployment
+### Deployment
 
 GitHub Actions builds the static site and uploads it as a GitHub Pages artifact. Pull requests validate the build, while deployment is restricted to commits on `main`.
 
 After Pages uses **GitHub Actions** as its source, the site is published at `https://friggemannmichael.github.io/my-Blog/`. CI must use the pinned pnpm version and lockfile.
 
-## Validation
+### Validation
 
 ```bash
 pnpm install --frozen-lockfile
