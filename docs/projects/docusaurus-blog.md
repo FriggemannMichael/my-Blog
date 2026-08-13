@@ -32,10 +32,27 @@ This project is my DevSecOps learning journal and portfolio. It is based on the 
 
 Git, Node.js 22 or later, and pnpm 11.9.0 must be installed.
 
+Clone the repository:
+
 ```bash
 git clone https://github.com/FriggemannMichael/my-Blog.git
+```
+
+Change into the project directory:
+
+```bash
 cd my-Blog
+```
+
+Install the dependencies:
+
+```bash
 pnpm install --frozen-lockfile
+```
+
+Start the development server:
+
+```bash
 pnpm start
 ```
 
