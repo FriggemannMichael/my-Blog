@@ -396,17 +396,17 @@ ssh <ssh_alias>
 
 | Done | Check | Expected result |
 | --- | --- | --- |
-| - [ ] | Local Ed25519 key pair | Private and public key files exist with the configured names. |
-| - [ ] | Public key installation | The public key exists in the server user's `authorized_keys` file. |
-| - [ ] | SSH key login | Login succeeds without the account password. |
-| - [ ] | Password-only SSH login | The server responds with `Permission denied (publickey)`. |
-| - [ ] | Git identity | The configured GitHub username and email are returned. |
-| - [ ] | Dedicated GitHub key | The public key is registered in the GitHub account. |
-| - [ ] | Server authentication to GitHub | GitHub confirms successful authentication. |
-| - [ ] | Nginx configuration | `sudo nginx -t` reports a successful syntax test. |
-| - [ ] | Default Nginx page | The website is externally available and returns HTTP 200. |
-| - [ ] | Alternative Nginx page | The website on port `8081` is externally available and returns HTTP 200. |
-| - [ ] | Local SSH alias | The alias opens the server connection. |
+| ☐ | Local Ed25519 key pair | Private and public key files exist with the configured names. |
+| ☐ | Public key installation | The public key exists in the server user's `authorized_keys` file. |
+| ☐ | SSH key login | Login succeeds without the account password. |
+| ☐ | Password-only SSH login | The server responds with `Permission denied (publickey)`. |
+| ☐ | Git identity | The configured GitHub username and email are returned. |
+| ☐ | Dedicated GitHub key | The public key is registered in the GitHub account. |
+| ☐ | Server authentication to GitHub | GitHub confirms successful authentication. |
+| ☐ | Nginx configuration | `sudo nginx -t` reports a successful syntax test. |
+| ☐ | Default Nginx page | The website is externally available and returns HTTP 200. |
+| ☐ | Alternative Nginx page | The website on port `8081` is externally available and returns HTTP 200. |
+| ☐ | Local SSH alias | The alias opens the server connection. |
 
 ## Additional Information
 
