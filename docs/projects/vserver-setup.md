@@ -8,7 +8,7 @@ import GithubLinkAdmonition from '@site/src/components/GithubLinkAdmonition';
 
 # V-Server Setup
 
-This project documents how I configured and secured my first Ubuntu-based virtual server during the Developer Akademie DevSecOps course. The server uses Ed25519 key-based SSH access, can authenticate with GitHub, and serves two websites through Nginx.
+This guide explains how to configure and secure an Ubuntu-based virtual server. The resulting server uses Ed25519 key-based SSH access, can authenticate with GitHub, and serves two websites through Nginx.
 
 <GithubLinkAdmonition
   link="https://github.com/FriggemannMichael/V-Server"
@@ -49,7 +49,7 @@ The setup requires:
 - a GitHub account; and
 - access to ports `22`, `80`, and `8081`.
 
-The examples use the documentation-only IP address `203.0.113.10` and the example user `server-user`. Replace both values with the real connection details. Never commit real credentials, private SSH keys, or sensitive infrastructure data.
+The examples use the intentionally invalid IP address `123.456.789.10`. Replace it and every value enclosed in angle brackets, such as `<server_user>`, with the real connection details. Never commit real credentials, private SSH keys, or sensitive infrastructure data.
 
 ## Usage
 
@@ -58,43 +58,43 @@ The examples use the documentation-only IP address `203.0.113.10` and the exampl
 Create a dedicated directory for the local server key:
 
 ```bash
-mkdir -p ~/.ssh/vserver-kurs
+mkdir -p ~/.ssh/<folder>
 ```
 
 Protect the directory:
 
 ```bash
-chmod 700 ~/.ssh/vserver-kurs
+chmod 700 ~/.ssh/<folder>
 ```
 
 Generate an Ed25519 key pair locally:
 
 ```bash
-ssh-keygen -t ed25519 -f ~/.ssh/vserver-kurs/vserver_ed25519 -C "vserver-kurs"
+ssh-keygen -t ed25519 -f ~/.ssh/<folder>/<key_name> -C "<key_comment>"
 ```
 
 Restrict the private key permissions:
 
 ```bash
-chmod 600 ~/.ssh/vserver-kurs/vserver_ed25519
+chmod 600 ~/.ssh/<folder>/<key_name>
 ```
 
 Set the public key permissions:
 
 ```bash
-chmod 644 ~/.ssh/vserver-kurs/vserver_ed25519.pub
+chmod 644 ~/.ssh/<folder>/<key_name>.pub
 ```
 
 Copy only the public key to the server:
 
 ```bash
-ssh-copy-id -i ~/.ssh/vserver-kurs/vserver_ed25519.pub server-user@203.0.113.10
+ssh-copy-id -i ~/.ssh/<folder>/<key_name>.pub <server_user>@123.456.789.10
 ```
 
 Test key-based login before changing the SSH server configuration:
 
 ```bash
-ssh -i ~/.ssh/vserver-kurs/vserver_ed25519 -o IdentitiesOnly=yes server-user@203.0.113.10
+ssh -i ~/.ssh/<folder>/<key_name> -o IdentitiesOnly=yes <server_user>@123.456.789.10
 ```
 
 ### Disable SSH password authentication
@@ -141,7 +141,7 @@ kbdinteractiveauthentication no
 Keep the active SSH session open and run the following negative test from a second local terminal:
 
 ```bash
-ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o KbdInteractiveAuthentication=no -o NumberOfPasswordPrompts=1 server-user@203.0.113.10
+ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o KbdInteractiveAuthentication=no -o NumberOfPasswordPrompts=1 <server_user>@123.456.789.10
 ```
 
 The expected response is `Permission denied (publickey)`. A normal key-based login must continue to work.
@@ -157,13 +157,13 @@ git --version
 Configure the GitHub username used for commits:
 
 ```bash
-git config --global user.name "<your_github_username>"
+git config --global user.name "<github_username>"
 ```
 
 Configure the email address associated with the GitHub account:
 
 ```bash
-git config --global user.email "<your_github_email>"
+git config --global user.email "<github_email>"
 ```
 
 Verify the configured username:
@@ -189,16 +189,16 @@ ls -la ~/.ssh
 Generate an Ed25519 key pair on the server. Do not overwrite an existing key:
 
 ```bash
-ssh-keygen -t ed25519 -C "<your_github_email>" -f ~/.ssh/id_ed25519_github
+ssh-keygen -t ed25519 -C "<github_email>" -f ~/.ssh/<github_key_name>
 ```
 
 Display only the public key:
 
 ```bash
-cat ~/.ssh/id_ed25519_github.pub
+cat ~/.ssh/<github_key_name>.pub
 ```
 
-Add the complete public key to **GitHub → Settings → SSH and GPG keys → New SSH key** as an authentication key. The private file `~/.ssh/id_ed25519_github` must never be displayed, copied, or committed.
+Add the complete public key to **GitHub → Settings → SSH and GPG keys → New SSH key** as an authentication key. The private file `~/.ssh/<github_key_name>` must never be displayed, copied, or committed.
 
 Open the server's SSH client configuration:
 
@@ -212,7 +212,7 @@ Configure GitHub to use the dedicated key:
 Host github.com
     HostName github.com
     User git
-    IdentityFile ~/.ssh/id_ed25519_github
+    IdentityFile ~/.ssh/<github_key_name>
     IdentitiesOnly yes
 ```
 
@@ -262,20 +262,20 @@ Test the default website on the server:
 curl -I http://127.0.0.1/
 ```
 
-Open `http://<your_ip>/` from another computer and expect an `HTTP/1.1 200 OK` response.
+Replace the example IP address in `http://123.456.789.10/`, open the resulting URL from another computer, and expect an `HTTP/1.1 200 OK` response.
 
 ### Configure an alternative website
 
 Create a separate document root:
 
 ```bash
-sudo mkdir -p /var/www/alternativs
+sudo mkdir -p /var/www/<site_name>
 ```
 
 Create the alternative entry page:
 
 ```bash
-sudo nano /var/www/alternativs/alternate-index.html
+sudo nano /var/www/<site_name>/index.html
 ```
 
 Add the page content:
@@ -311,7 +311,7 @@ Commercial support is available at
 Create the Nginx server block under `sites-available`:
 
 ```bash
-sudo nano /etc/nginx/sites-available/alternativs
+sudo nano /etc/nginx/sites-available/<site_name>
 ```
 
 Add the server block:
@@ -321,8 +321,8 @@ server {
     listen 8081;
     listen [::]:8081;
 
-    root /var/www/alternativs;
-    index alternate-index.html;
+    root /var/www/<site_name>;
+    index index.html;
 
     location / {
         try_files $uri $uri/ =404;
@@ -333,7 +333,7 @@ server {
 Enable the site with a symbolic link:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/alternativs /etc/nginx/sites-enabled/alternativs
+sudo ln -s /etc/nginx/sites-available/<site_name> /etc/nginx/sites-enabled/<site_name>
 ```
 
 Validate the Nginx configuration:
@@ -360,7 +360,7 @@ Verify its identifying content:
 curl -s http://127.0.0.1:8081/ | grep -E "Welcome to NEW nginx|Es hat funktioniert"
 ```
 
-Open `http://<your_ip>:8081/` from another computer and expect an `HTTP/1.1 200 OK` response.
+Replace the example IP address in `http://123.456.789.10:8081/`, open the resulting URL from another computer, and expect an `HTTP/1.1 200 OK` response.
 
 ### Create a local SSH alias
 
@@ -373,10 +373,10 @@ nano ~/.ssh/config
 Add a convenient host definition:
 
 ```sshconfig
-Host vserver-kurs
-    HostName 203.0.113.10
-    User server-user
-    IdentityFile ~/.ssh/vserver-kurs/vserver_ed25519
+Host <ssh_alias>
+    HostName 123.456.789.10
+    User <server_user>
+    IdentityFile ~/.ssh/<folder>/<key_name>
     IdentitiesOnly yes
 ```
 
@@ -389,24 +389,24 @@ chmod 600 ~/.ssh/config
 Test the alias:
 
 ```bash
-ssh vserver-kurs
+ssh <ssh_alias>
 ```
 
 ### Validation
 
-| Check | Result |
-| --- | --- |
-| Local Ed25519 key pair created | Passed |
-| Public key installed on the server | Passed |
-| SSH key login works | Passed |
-| Password-only SSH login is rejected | Passed |
-| Git username and email configured on the server | Passed |
-| Dedicated server key added to GitHub | Passed |
-| Server authentication to GitHub works | Passed |
-| Nginx configuration test succeeds | Passed |
-| Default Nginx page is externally available | Passed |
-| Alternative page on port 8081 is externally available | Passed |
-| Local SSH alias works | Passed |
+Run each check after replacing the example values and placeholders with the real connection details.
+
+| Check | Command or action | Expected result |
+| --- | --- | --- |
+| Local Ed25519 key pair | `ls -l ~/.ssh/<folder>/<key_name>*` | Private and public key files are present with restricted permissions. |
+| SSH key login | Connect with the dedicated identity. | Login succeeds without the account password. |
+| Password-only SSH login | Run the negative authentication test above. | The server responds with `Permission denied (publickey)`. |
+| Git identity | Run both `git config --global --get` commands. | The configured GitHub username and email are returned. |
+| Server authentication to GitHub | `ssh -T git@github.com` | GitHub confirms authentication and states that shell access is unavailable. |
+| Nginx configuration | `sudo nginx -t` | The syntax test reports success. |
+| Default Nginx page | Open the default website from another computer. | The page loads and returns HTTP 200. |
+| Alternative Nginx page | Open the website on port `8081`. | The customized page loads and returns HTTP 200. |
+| Local SSH alias | `ssh <ssh_alias>` | The alias opens the server connection. |
 
 ## Additional Information
 
@@ -423,12 +423,12 @@ For security reasons, the public documentation uses example values for the IP ad
 | Property | Value |
 | --- | --- |
 | Operating system | Ubuntu 24.04.4 LTS |
-| Public IP address | `203.0.113.10` (documentation example) |
-| SSH user | `server-user` (documentation example) |
+| Public IP address | `123.456.789.10` (intentionally invalid example) |
+| SSH user | `<server_user>` |
 | Git | 2.43.0 |
 | Web server | Nginx 1.24.0 |
-| Default website | `http://203.0.113.10/` (documentation example) |
-| Alternative website | `http://203.0.113.10:8081/` (documentation example) |
+| Default website | `http://123.456.789.10/` (documentation example) |
+| Alternative website | `http://123.456.789.10:8081/` (documentation example) |
 
 ### Security considerations
 
